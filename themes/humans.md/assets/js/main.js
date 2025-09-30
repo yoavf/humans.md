@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tempContainer.className = 'term-messages';
     terminal.appendChild(tempContainer);
 
-    messages.forEach(msg => {
+    messages.forEach((msg, idx) => {
       const div = document.createElement('div');
       div.className = 'term-line';
       if (msg.type === 'user') {
@@ -31,9 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (msg.type === 'assistant') {
         div.innerHTML = `<span class="term-prefix">⏺</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'tool') {
-        div.innerHTML = `<span class="term-prefix term-dot-green">●</span><span class="term-content">${msg.content}</span>`;
+        const dotClass = msg.failed ? 'term-dot-red' : 'term-dot-green';
+        div.innerHTML = `<span class="term-prefix ${dotClass}">●</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'output') {
         div.className = 'term-line term-output';
+        div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content">${msg.content}</span>`;
+      } else if (msg.type === 'error') {
+        div.className = 'term-line term-error';
         div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'interrupted') {
         div.className = 'term-line term-interrupted';
@@ -102,9 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (message.type === 'assistant') {
           addAssistantMessage(message.content);
         } else if (message.type === 'tool') {
-          addToolMessage(message.content);
+          addToolMessage(message);
         } else if (message.type === 'output') {
           addOutputMessage(message.content);
+        } else if (message.type === 'error') {
+          addErrorMessage(message.content);
         } else if (message.type === 'interrupted') {
           addInterruptedMessage();
         } else if (message.type === 'processing') {
@@ -186,12 +192,30 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessage('term-assistant', '⏺', content, 300);
       };
 
-      const addToolMessage = (content) => {
-        addMessage('term-tool', '●', content, 600);
+      const addToolMessage = (message) => {
+        if (animationId !== currentAnimationId) return;
+
+        inputCursor.style.display = 'inline-block';
+
+        activeTimeouts.push(setTimeout(() => {
+          if (animationId !== currentAnimationId) return;
+
+          const dotClass = message.failed ? 'term-dot-red' : 'term-dot-green';
+
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'term-line term-tool';
+          messageDiv.innerHTML = `<span class="term-prefix ${dotClass}">●</span><span class="term-content">${message.content}</span>`;
+          messagesContainer.appendChild(messageDiv);
+          activeTimeouts.push(setTimeout(processMessage, 600));
+        }, 600));
       };
 
       const addOutputMessage = (content) => {
         addMessage('term-output', '⎿', content, 400);
+      };
+
+      const addErrorMessage = (content) => {
+        addMessage('term-error', '⎿', content, 100);
       };
 
       const addInterruptedMessage = () => {

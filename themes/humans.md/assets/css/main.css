@@ -414,6 +414,7 @@ hr {
 }
 
 .term-output,
+.term-error,
 .term-interrupted {
   margin-top: -0.6rem;
   margin-bottom: 0.8rem;
@@ -421,6 +422,7 @@ hr {
 }
 
 .term-output .term-prefix,
+.term-error .term-prefix,
 .term-interrupted .term-prefix {
   font-size: 1.5em;
   line-height: 1;
@@ -429,6 +431,7 @@ hr {
 }
 
 .term-output .term-content,
+.term-error .term-content,
 .term-interrupted .term-content {
   position: relative;
   top: 0.5em;
@@ -481,10 +484,6 @@ hr {
   color: #888;
 }
 
-.term-dot-green {
-  color: #10b981;
-}
-
 .term-indent {
   flex-shrink: 0;
   margin-right: 0.5rem;
@@ -531,8 +530,12 @@ hr {
   color: #e8e8e8;
 }
 
-.term-tool .term-prefix {
+.term-tool .term-prefix.term-dot-green {
   color: #10b981;
+}
+
+.term-tool .term-prefix.term-dot-red {
+  color: #ff6b6b;
 }
 
 .term-output {
@@ -540,6 +543,14 @@ hr {
 }
 
 .term-output .term-content {
+  padding-left: 0;
+}
+
+.term-error {
+  color: #ff6b6b;
+}
+
+.term-error .term-content {
   padding-left: 0;
 }
 

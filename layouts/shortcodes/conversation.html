@@ -29,9 +29,17 @@ output: Tool output here
       {{- $assistantText = replace $assistantText "You're absolutely right!" "<a href=\"https://absolutelyright.lol/\" target=\"_blank\" rel=\"noopener\" class=\"term-text\">You're absolutely right!</a>" -}}
       {{- $messages = $messages | append (dict "type" "assistant" "content" $assistantText) -}}
     {{- else if hasPrefix $line "tool:" -}}
-      {{- $messages = $messages | append (dict "type" "tool" "content" (trim (substr $line 5) " ")) -}}
+      {{- $toolContent := trim (substr $line 5) " " -}}
+      {{- $failed := false -}}
+      {{- if strings.Contains $toolContent " fail=true" -}}
+        {{- $failed = true -}}
+        {{- $toolContent = replaceRE " fail=true$" "" $toolContent -}}
+      {{- end -}}
+      {{- $messages = $messages | append (dict "type" "tool" "content" $toolContent "failed" $failed) -}}
     {{- else if hasPrefix $line "output:" -}}
       {{- $messages = $messages | append (dict "type" "output" "content" (trim (substr $line 7) " ")) -}}
+    {{- else if hasPrefix $line "error:" -}}
+      {{- $messages = $messages | append (dict "type" "error" "content" (trim (substr $line 6) " ")) -}}
     {{- else if eq $line "interrupted" -}}
       {{- $messages = $messages | append (dict "type" "interrupted" "content" "") -}}
     {{- else if hasPrefix $line "processing:" -}}
