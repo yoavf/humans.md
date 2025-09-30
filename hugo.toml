@@ -1,0 +1,12 @@
+baseURL = 'https://humans.md/'
+languageCode = 'en-us'
+title = 'HUMANS.md - notes on AI assisted coding'
+theme = 'humans.md'
+
+[permalinks]
+posts = "/posts/:slug/"
+
+[markup]
+  [markup.highlight]
+    noClasses = true
+    style = 'monokai'

@@ -1,0 +1,22 @@
+{{- /*
+Vim-style editor shortcode for displaying code/config files
+Usage:
+{{< editor file="AGENTS.md" >}}
+Your content here
+{{< /editor >}}
+*/ -}}
+
+{{- $lang := "markdown" -}}
+{{- $content := trim .Inner "\n" -}}
+{{- $highlighted := transform.Highlight $content $lang "linenos=inline,linenostart=1" -}}
+
+<div class="editor">
+  <button class="editor-copy" title="Copy to clipboard">⎘</button>
+  <div class="editor-content" data-content="{{ $content }}">
+    {{ $highlighted | safeHTML }}
+  </div>
+  <div class="editor-status">
+    <span class="editor-filename">{{ .Get "file" | default "untitled" }}</span>
+    <span class="editor-info">{{ len (split $content "\n") }}L</span>
+  </div>
+</div>

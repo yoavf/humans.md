@@ -1,0 +1,18 @@
+{{- /*
+See Also shortcode - displays related posts
+Usage:
+{{< see-also "clear-often" "start-with-a-script" >}}
+*/ -}}
+
+<div class="see-also">
+  <div class="see-also-label">See also:</div>
+  <ul>
+{{- range .Params -}}
+  {{- $slug := . -}}
+  {{- $page := $.Site.GetPage (printf "posts/%s" $slug) -}}
+  {{- if $page -}}
+    <li><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></li>
+  {{- end -}}
+{{- end -}}
+  </ul>
+</div>

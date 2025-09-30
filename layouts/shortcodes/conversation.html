@@ -1,0 +1,46 @@
+{{- /*
+Claude Code-style terminal conversation shortcode
+Usage:
+{{< conversation >}}
+user: Your message here
+assistant: Assistant response
+tool: Bash(command here)
+output: Tool output here
+{{< /conversation >}}
+*/ -}}
+
+<div class="terminal" data-height-adjust="{{ .Get "height-adjust" | default "0" }}">
+  <button class="term-restart" title="Restart animation">↻</button>
+  <div class="term-messages"></div>
+  <div class="term-line term-input">
+    <span class="term-prefix">&gt;</span>
+    <span class="term-content"></span>
+  </div>
+  <script type="application/json" class="term-data">
+{{- $lines := split .Inner "\n" -}}
+{{- $messages := slice -}}
+{{- range $lines -}}
+  {{- $line := trim . " \t\r" -}}
+  {{- if $line -}}
+    {{- if hasPrefix $line "user:" -}}
+      {{- $messages = $messages | append (dict "type" "user" "content" (trim (substr $line 5) " ")) -}}
+    {{- else if hasPrefix $line "assistant:" -}}
+      {{- $assistantText := trim (substr $line 10) " " -}}
+      {{- $assistantText = replace $assistantText "You're absolutely right!" "<a href=\"https://absolutelyright.lol/\" target=\"_blank\" rel=\"noopener\" class=\"term-text\">You're absolutely right!</a>" -}}
+      {{- $messages = $messages | append (dict "type" "assistant" "content" $assistantText) -}}
+    {{- else if hasPrefix $line "tool:" -}}
+      {{- $messages = $messages | append (dict "type" "tool" "content" (trim (substr $line 5) " ")) -}}
+    {{- else if hasPrefix $line "output:" -}}
+      {{- $messages = $messages | append (dict "type" "output" "content" (trim (substr $line 7) " ")) -}}
+    {{- else if eq $line "interrupted" -}}
+      {{- $messages = $messages | append (dict "type" "interrupted" "content" "") -}}
+    {{- else if hasPrefix $line "processing:" -}}
+      {{- $messages = $messages | append (dict "type" "processing" "content" (trim (substr $line 11) " ")) -}}
+    {{- else if eq $line "processing" -}}
+      {{- $messages = $messages | append (dict "type" "processing" "content" "") -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{ $messages | jsonify | safeJS }}
+</script>
+</div>
