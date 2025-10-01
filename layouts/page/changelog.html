@@ -1,0 +1,24 @@
+{{ define "main" }}
+<article>
+  <header>
+    <h1>{{ .Title }}</h1>
+  </header>
+
+  {{- $posts := where .Site.RegularPages "Type" "posts" -}}
+  {{- range $posts.GroupByDate "2006-01" "desc" -}}
+    <h2>{{ .Key }}</h2>
+
+    {{- range .Pages.ByDate.Reverse -}}
+      {{- $dateStr := .Date.Format "Jan 2" -}}
+      {{- if not (isset $.Scratch $dateStr) -}}
+        <p><strong>{{ $dateStr }}</strong></p>
+        {{- $.Scratch.Set $dateStr true -}}
+      {{- end -}}
+      <ul style="margin-top: -1rem; margin-bottom: 1rem;">
+        <li>Added: <a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      </ul>
+    {{- end -}}
+    {{- $.Scratch.Delete "*" -}}
+  {{- end -}}
+</article>
+{{ end }}

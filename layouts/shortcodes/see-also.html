@@ -1,5 +1,5 @@
 {{- /*
-See Also shortcode - displays related posts
+See Also shortcode - displays related posts with category prefix
 Usage:
 {{< see-also "clear-often" "start-with-a-script" >}}
 */ -}}
@@ -11,7 +11,7 @@ Usage:
   {{- $slug := . -}}
   {{- $page := $.Site.GetPage (printf "posts/%s" $slug) -}}
   {{- if $page -}}
-    <li><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></li>
+    <li><a href="{{ $page.RelPermalink }}">{{ $page.Params.category }}: {{ $page.Title }}</a></li>
   {{- end -}}
 {{- end -}}
   </ul>

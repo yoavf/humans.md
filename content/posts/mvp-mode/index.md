@@ -2,6 +2,7 @@
 date = '2025-09-30T20:55:51+03:00'
 draft = false
 title = 'MVP mode'
+category = 'Setup'
 +++
 
 When you're prototyping or moving fast, tell your agent explicitly. This helps avoid premature optimization. Add this to your AGENTS.md:

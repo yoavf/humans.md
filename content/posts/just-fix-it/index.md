@@ -2,6 +2,7 @@
 date = '2025-10-01T00:13:00+03:00'
 draft = false
 title = 'Just fix it'
+category = 'Debugging'
 +++
 
 When the agent fails multiple times on something trivial, stop and fix it yourself. You know how to code—make the change directly, then let the agent continue from there.

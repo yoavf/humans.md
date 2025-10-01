@@ -1,7 +1,8 @@
 +++
-date = '2025-09-27T19:08:00+03:00'
+date = '2025-09-21T19:08:00+03:00'
 draft = false
-title = 'Ask: can you simplify anything?'
+title = 'Can you simplify anything?'
+category = 'Refining'
 +++
 
 After implementing a feature, ask your agent: "Examine the changes since the last commit – can you simplify anything?" Self-reflection works for AI agents too.

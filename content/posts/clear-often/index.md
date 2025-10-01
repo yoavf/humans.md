@@ -2,6 +2,7 @@
 date = '2025-09-29T19:08:00+03:00'
 draft = false
 title = 'Clear Often'
+category = 'Building'
 +++
 
 When working with AI coding agents, clear the conversation often. A fresh context keeps the agent focused on your current task without baggage from earlier attempts.

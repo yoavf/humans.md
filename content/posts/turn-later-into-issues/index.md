@@ -2,6 +2,7 @@
 date = '2025-09-30T22:51:44+03:00'
 draft = false
 title = "Turn 'later' into issues"
+category = 'Building'
 +++
 
 When you defer work, you risk forgetting about it. Configure your agent to create GitHub issues automatically. Add this to your AGENTS.md:

@@ -1,15 +1,27 @@
 {{ define "main" }}
   {{ .Content }}
-  <ul class="post-list">
-    {{ range site.RegularPages }}
-      <li class="post-item">
-        <a href="{{ .RelPermalink }}" class="post-link">
-          <span class="post-title">{{ .LinkTitle }}</span>
-          {{ with .Date }}
-            <span class="post-date">{{ .Format "Jan 2, 2006" }}</span>
-          {{ end }}
-        </a>
-      </li>
-    {{ end }}
-  </ul>
+
+  {{- $categories := slice "Setup" "Building" "Debugging" "Refining" -}}
+
+  <div class="category-grid">
+    {{- range $categories -}}
+      {{- $category := . -}}
+      {{- $posts := where site.RegularPages "Params.category" $category -}}
+      {{- if $posts -}}
+        <div class="category-column">
+          <h2 class="category-title">{{ $category }}</h2>
+          <ul class="post-list">
+            {{- range $posts.ByDate.Reverse -}}
+              <li class="post-item">
+                <a href="{{ .RelPermalink }}" class="post-link">
+                  <span class="post-title">{{ .LinkTitle }}</span>
+                  <time class="post-date">{{ .Date.Format "Jan 2, 2006" }}</time>
+                </a>
+              </li>
+            {{- end -}}
+          </ul>
+        </div>
+      {{- end -}}
+    {{- end -}}
+  </div>
 {{ end }}

@@ -1,7 +1,8 @@
 +++
-date = '2025-09-28T19:08:00+03:00'
+date = '2025-09-23T19:08:00+03:00'
 draft = false
 title = 'Start with a script'
+category = 'Debugging'
 +++
 
 When the agent gets stuck on a complex multi-step process or struggling with an unfamiliar API, ask it to write a standalone script first to validate the approach.

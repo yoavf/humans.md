@@ -1,0 +1,86 @@
+{{ define "main" }}
+<article>
+  <header>
+    <h1>{{ .Title }}</h1>
+  </header>
+
+  <div class="changelog-grid">
+  {{- $posts := where .Site.RegularPages "Type" "posts" -}}
+  {{- $now := now -}}
+  {{- $weekStart := $now.AddDate 0 0 -7 -}}
+  {{- $lastWeekStart := $weekStart.AddDate 0 0 -7 -}}
+
+  {{- $entries := slice -}}
+
+  {{- range $posts -}}
+    {{- $entry := dict "page" . "date" .Date "type" "added" -}}
+    {{- $entries = $entries | append $entry -}}
+
+    {{- if and .Params.lastmod .Params.changelog -}}
+      {{- $editEntry := dict "page" . "date" .Lastmod "type" "updated" "changelog" .Params.changelog -}}
+      {{- $entries = $entries | append $editEntry -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $thisWeekEntries := slice -}}
+  {{- $lastWeekEntries := slice -}}
+  {{- $previousEntries := slice -}}
+
+  {{- range $entries -}}
+    {{- $entryDate := .date -}}
+    {{- if ge $entryDate.Unix $weekStart.Unix -}}
+      {{- $thisWeekEntries = $thisWeekEntries | append . -}}
+    {{- else if ge $entryDate.Unix $lastWeekStart.Unix -}}
+      {{- $lastWeekEntries = $lastWeekEntries | append . -}}
+    {{- else -}}
+      {{- $previousEntries = $previousEntries | append . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $thisWeekEntries -}}
+    <div class="changelog-column">
+      <h3>This week</h3>
+      <ul>
+        {{- range sort $thisWeekEntries "date" "desc" -}}
+          {{- if eq .type "added" -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a></li>
+          {{- else -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a> <span style="color: #999;">(Edited: {{ .changelog }})</span></li>
+          {{- end -}}
+        {{- end -}}
+      </ul>
+    </div>
+  {{- end -}}
+
+  {{- if $lastWeekEntries -}}
+    <div class="changelog-column">
+      <h3>Last week</h3>
+      <ul>
+        {{- range sort $lastWeekEntries "date" "desc" -}}
+          {{- if eq .type "added" -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a></li>
+          {{- else -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a> <span style="color: #999;">(Edited: {{ .changelog }})</span></li>
+          {{- end -}}
+        {{- end -}}
+      </ul>
+    </div>
+  {{- end -}}
+
+  {{- if $previousEntries -}}
+    <div class="changelog-column">
+      <h3>Previously</h3>
+      <ul>
+        {{- range sort $previousEntries "date" "desc" -}}
+          {{- if eq .type "added" -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a></li>
+          {{- else -}}
+            <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a> <span style="color: #999;">(Edited: {{ .changelog }})</span></li>
+          {{- end -}}
+        {{- end -}}
+      </ul>
+    </div>
+  {{- end -}}
+  </div>
+</article>
+{{ end }}

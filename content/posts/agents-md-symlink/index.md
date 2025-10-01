@@ -2,6 +2,7 @@
 date = '2025-09-30T21:14:24+03:00'
 draft = false
 title = 'Symlink AGENTS.md'
+category = 'Setup'
 +++
 
 Different AI coding agents use different configuration files:
