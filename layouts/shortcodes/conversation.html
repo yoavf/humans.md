@@ -19,35 +19,74 @@ output: Tool output here
   <script type="application/json" class="term-data">
 {{- $lines := split .Inner "\n" -}}
 {{- $messages := slice -}}
+{{- $currentMessage := dict -}}
 {{- range $lines -}}
   {{- $line := trim . " \t\r" -}}
   {{- if $line -}}
     {{- if hasPrefix $line "user:" -}}
-      {{- $messages = $messages | append (dict "type" "user" "content" (trim (substr $line 5) " ")) -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "user" "content" (trim (substr $line 5) " ") -}}
     {{- else if hasPrefix $line "assistant:" -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
       {{- $assistantText := trim (substr $line 10) " " -}}
       {{- $assistantText = replace $assistantText "You're absolutely right!" "<a href=\"https://absolutelyright.lol/\" target=\"_blank\" rel=\"noopener\" class=\"term-text\">You're absolutely right!</a>" -}}
-      {{- $messages = $messages | append (dict "type" "assistant" "content" $assistantText) -}}
+      {{- $currentMessage = dict "type" "assistant" "content" $assistantText -}}
     {{- else if hasPrefix $line "tool:" -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
       {{- $toolContent := trim (substr $line 5) " " -}}
       {{- $failed := false -}}
       {{- if strings.Contains $toolContent " fail=true" -}}
         {{- $failed = true -}}
         {{- $toolContent = replaceRE " fail=true$" "" $toolContent -}}
       {{- end -}}
-      {{- $messages = $messages | append (dict "type" "tool" "content" $toolContent "failed" $failed) -}}
+      {{- $currentMessage = dict "type" "tool" "content" $toolContent "failed" $failed -}}
     {{- else if hasPrefix $line "output:" -}}
-      {{- $messages = $messages | append (dict "type" "output" "content" (trim (substr $line 7) " ")) -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "output" "content" (trim (substr $line 7) " ") -}}
     {{- else if hasPrefix $line "error:" -}}
-      {{- $messages = $messages | append (dict "type" "error" "content" (trim (substr $line 6) " ")) -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "error" "content" (trim (substr $line 6) " ") -}}
     {{- else if eq $line "interrupted" -}}
-      {{- $messages = $messages | append (dict "type" "interrupted" "content" "") -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "interrupted" "content" "" -}}
     {{- else if hasPrefix $line "processing:" -}}
-      {{- $messages = $messages | append (dict "type" "processing" "content" (trim (substr $line 11) " ")) -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "processing" "content" (trim (substr $line 11) " ") -}}
     {{- else if eq $line "processing" -}}
-      {{- $messages = $messages | append (dict "type" "processing" "content" "") -}}
+      {{- if $currentMessage.type -}}
+        {{- $messages = $messages | append $currentMessage -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "processing" "content" "" -}}
+    {{- else -}}
+      {{- /* Line doesn't start with a known prefix - append to current message */ -}}
+      {{- if $currentMessage.type -}}
+        {{- $currentContent := $currentMessage.content -}}
+        {{- if $currentContent -}}
+          {{- $currentMessage = merge $currentMessage (dict "content" (printf "%s\n%s" $currentContent $line)) -}}
+        {{- else -}}
+          {{- $currentMessage = merge $currentMessage (dict "content" $line) -}}
+        {{- end -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
+{{- end -}}
+{{- /* Append the last message */ -}}
+{{- if $currentMessage.type -}}
+  {{- $messages = $messages | append $currentMessage -}}
 {{- end -}}
 {{ $messages | jsonify | safeJS }}
 </script>

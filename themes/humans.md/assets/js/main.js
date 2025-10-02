@@ -172,6 +172,20 @@ document.addEventListener('DOMContentLoaded', () => {
         activeTimeouts.push(setTimeout(typeChar, 200));
       };
 
+      let currentProcessingMessage = null;
+      let currentProcessingInterval = null;
+
+      const removeProcessingMessage = () => {
+        if (currentProcessingMessage && currentProcessingMessage.parentNode) {
+          if (currentProcessingInterval) {
+            clearInterval(currentProcessingInterval);
+            currentProcessingInterval = null;
+          }
+          currentProcessingMessage.remove();
+          currentProcessingMessage = null;
+        }
+      };
+
       const addMessage = (className, prefix, content, delay) => {
         if (animationId !== currentAnimationId) return;
 
@@ -179,6 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeTimeouts.push(setTimeout(() => {
           if (animationId !== currentAnimationId) return;
+
+          removeProcessingMessage();
 
           const messageDiv = document.createElement('div');
           messageDiv.className = `term-line ${className}`;
@@ -199,6 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeTimeouts.push(setTimeout(() => {
           if (animationId !== currentAnimationId) return;
+
+          removeProcessingMessage();
 
           const dotClass = message.failed ? 'term-dot-red' : 'term-dot-green';
 
@@ -262,7 +280,21 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 80);
 
           activeIntervals.push(spinnerInterval);
-          activeTimeouts.push(setTimeout(processMessage, 400));
+
+          // Check if this is the last message
+          const isLastMessage = currentMessageIndex >= messages.length;
+
+          if (!isLastMessage) {
+            // Store reference to remove later
+            currentProcessingMessage = messageDiv;
+            currentProcessingInterval = spinnerInterval;
+
+            // Continue to next message after delay
+            activeTimeouts.push(setTimeout(processMessage, 2500));
+          } else {
+            // If it's the last message, just continue normally
+            activeTimeouts.push(setTimeout(processMessage, 400));
+          }
         }, 400));
       };
 
