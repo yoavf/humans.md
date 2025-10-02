@@ -15,4 +15,4 @@ When you're prototyping or moving fast, tell your agent explicitly. This helps a
 - Add TODOs in areas where we'll want to revisit.
 {{< /editor >}}
 
-{{< see-also "agents-md-symlink" >}}
+{{< see-also "agents-md-symlink" "turn-later-into-issues" >}}
