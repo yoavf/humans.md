@@ -616,8 +616,11 @@ hr {
 .term-user {
   margin-left: -0.5rem;
   margin-right: -0.5rem;
-  padding: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
+  background: rgb(66, 55, 55);
 }
 
 .term-user.typing {

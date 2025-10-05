@@ -1,13 +1,13 @@
 +++
 date = '2025-10-05T18:55:39+03:00'
 draft = false
-title = 'Reference Other Sessions'
+title = 'Reference past sessions'
 category = 'Building'
 +++
 
 When working on a complex task across multiple sessions, it may be useful to point the agent to previous conversations for additional context. Many AI coding tools store session history locally in the file system.
 
-{{< conversation height-adjust="-60" >}}
+{{< conversation height-adjust="-20" >}}
 assistant: We have a bug in the flux capacitor. Let me see w
 interrupted
 user: We've already sorted this. See our session in ~/.claude/projects/delorean/MTk1NTExMDU=.json

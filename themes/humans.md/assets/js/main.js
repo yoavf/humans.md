@@ -15,22 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get height adjustment from data attribute
     const heightAdjust = parseInt(terminal.dataset.heightAdjust || '0', 10);
 
-    // Calculate height once (doesn't change)
-    const tempContainer = document.createElement('div');
-    tempContainer.style.visibility = 'hidden';
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.width = terminal.clientWidth - 48 + 'px';
-    tempContainer.className = 'term-messages';
-    terminal.appendChild(tempContainer);
-
-    messages.forEach((msg, idx) => {
+    // Helper to create message HTML
+    const createMessageDiv = (msg) => {
       const div = document.createElement('div');
-      div.className = 'term-line';
+
       if (msg.type === 'user') {
+        div.className = 'term-line term-user';
         div.innerHTML = `<span class="term-prefix">&gt;</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'assistant') {
+        div.className = 'term-line term-assistant';
         div.innerHTML = `<span class="term-prefix">⏺</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'tool') {
+        div.className = 'term-line term-tool';
         const dotClass = msg.failed ? 'term-dot-red' : 'term-dot-green';
         div.innerHTML = `<span class="term-prefix ${dotClass}">●</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'output') {
@@ -41,17 +37,30 @@ document.addEventListener('DOMContentLoaded', () => {
         div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'interrupted') {
         div.className = 'term-line term-interrupted';
-        div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content"><span class="interrupted-label">Interrupted</span> · What should Agent do instead?</span>`;
+        div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content"><span class="interrupted-label">Interrupted</span> · What should Claude do instead?</span>`;
       } else if (msg.type === 'processing') {
         div.className = 'term-line term-processing';
         div.innerHTML = `<span class="term-spinner">⠋</span><span class="term-content">${msg.content}</span><span class="term-esc">(esc to interrupt)</span>`;
       }
-      tempContainer.appendChild(div);
+
+      return div;
+    };
+
+    // Calculate height once (doesn't change)
+    const tempContainer = document.createElement('div');
+    tempContainer.style.visibility = 'hidden';
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.width = terminal.clientWidth - 48 + 'px';
+    tempContainer.className = 'term-messages';
+    terminal.appendChild(tempContainer);
+
+    messages.forEach((msg) => {
+      tempContainer.appendChild(createMessageDiv(msg));
     });
 
     const messagesHeight = tempContainer.offsetHeight;
     const inputHeight = terminal.querySelector('.term-input').offsetHeight;
-    const calculatedHeight = messagesHeight + inputHeight + 86 + heightAdjust; // Extra padding
+    const calculatedHeight = messagesHeight + inputHeight + 72 + heightAdjust; // Extra padding
     terminal.style.minHeight = calculatedHeight + 'px';
     tempContainer.remove();
 
@@ -139,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nextChar = text[charIndex];
             let delay;
 
-            if (currentChar === '.' || currentChar === '!' || currentChar === '?') {
+            if ((currentChar === '.' || currentChar === '!' || currentChar === '?') && nextChar === ' ') {
               delay = 400;
             } else if (currentChar === ',' || currentChar === ':') {
               delay = 200;
@@ -154,9 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activeTimeouts.push(setTimeout(() => {
               if (animationId !== currentAnimationId) return;
 
-              const messageDiv = document.createElement('div');
-              messageDiv.className = 'term-line term-user';
-              messageDiv.innerHTML = `<span class="term-prefix">&gt;</span><span class="term-content">${text}</span>`;
+              const messageDiv = createMessageDiv({ type: 'user', content: text });
               messagesContainer.appendChild(messageDiv);
 
               const textNode = inputLine.childNodes[0];
@@ -186,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      const addMessage = (className, prefix, content, delay) => {
+      const addMessage = (msg, delay) => {
         if (animationId !== currentAnimationId) return;
 
         inputCursor.style.display = 'inline-block';
@@ -196,48 +203,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
           removeProcessingMessage();
 
-          const messageDiv = document.createElement('div');
-          messageDiv.className = `term-line ${className}`;
-          messageDiv.innerHTML = `<span class="term-prefix${prefix === '●' ? ' term-dot-green' : ''}">${prefix}</span><span class="term-content">${content}</span>`;
+          const messageDiv = createMessageDiv(msg);
           messagesContainer.appendChild(messageDiv);
           activeTimeouts.push(setTimeout(processMessage, delay));
         }, delay));
       };
 
       const addAssistantMessage = (content) => {
-        addMessage('term-assistant', '⏺', content, 300);
+        addMessage({ type: 'assistant', content }, 300);
       };
 
       const addToolMessage = (message) => {
-        if (animationId !== currentAnimationId) return;
-
-        inputCursor.style.display = 'inline-block';
-
-        activeTimeouts.push(setTimeout(() => {
-          if (animationId !== currentAnimationId) return;
-
-          removeProcessingMessage();
-
-          const dotClass = message.failed ? 'term-dot-red' : 'term-dot-green';
-
-          const messageDiv = document.createElement('div');
-          messageDiv.className = 'term-line term-tool';
-          messageDiv.innerHTML = `<span class="term-prefix ${dotClass}">●</span><span class="term-content">${message.content}</span>`;
-          messagesContainer.appendChild(messageDiv);
-          activeTimeouts.push(setTimeout(processMessage, 600));
-        }, 600));
+        addMessage({ type: 'tool', content: message.content, failed: message.failed }, 600);
       };
 
       const addOutputMessage = (content) => {
-        addMessage('term-output', '⎿', content, 400);
+        addMessage({ type: 'output', content }, 400);
       };
 
       const addErrorMessage = (content) => {
-        addMessage('term-error', '⎿', content, 100);
+        addMessage({ type: 'error', content }, 100);
       };
 
       const addInterruptedMessage = () => {
-        addMessage('term-interrupted', '⎿', '<span class="interrupted-label">Interrupted</span> · What should Agent do instead?', 400);
+        addMessage({ type: 'interrupted' }, 400);
       };
 
       const addProcessingMessage = (content) => {
