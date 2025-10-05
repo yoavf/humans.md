@@ -9,15 +9,15 @@ When the agent fails multiple times on something trivial, stop and fix it yourse
 
 {{< conversation >}}
 assistant: Let me update the import path.
-tool: Edit(src/utils/formatter.js) fail=true
+tool: Edit(src/nakatomi/ventilation.js) fail=true
 error: File does not exist
 assistant: Let me try the correct path.
-tool: Edit(../src/util/formatter.js) fail=true
+tool: Edit(nakatomi-plaza/hvac.js) fail=true
 error: File does not exist
 interrupted
-user: Argh, fixed it for you. The file is in lib/formatter. Can you add the error handling now?
-assistant: You're absolutely right! Now I'll add the error handling.
-tool: Edit(lib/formatter.js)
+user: Argh, fixed it for you. The file is in lib/climate-control. Can you add the error handling now?
+assistant: Yippee-ki-yay! Thanks, I'll add the error handling.
+tool: Edit(lib/climate-control)
 {{< /conversation >}}
 
 This beats spending hours and wasting tokens on an unproductive back-and-forth. Fix it, then move forward.
