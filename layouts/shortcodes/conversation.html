@@ -56,11 +56,16 @@ output: Tool output here
         {{- $messages = $messages | append $currentMessage -}}
       {{- end -}}
       {{- $currentMessage = dict "type" "error" "content" (trim (substr $line 6) " ") -}}
-    {{- else if eq $line "interrupted" -}}
+    {{- else if hasPrefix $line "interrupted" -}}
       {{- if $currentMessage.type -}}
         {{- $messages = $messages | append $currentMessage -}}
       {{- end -}}
-      {{- $currentMessage = dict "type" "interrupted" "content" "" -}}
+      {{- $name := "Claude" -}}
+      {{- $rest := trim (substr $line 11) " " -}}
+      {{- if $rest -}}
+        {{- $name = $rest -}}
+      {{- end -}}
+      {{- $currentMessage = dict "type" "interrupted" "content" "" "name" $name -}}
     {{- else if hasPrefix $line "processing:" -}}
       {{- if $currentMessage.type -}}
         {{- $messages = $messages | append $currentMessage -}}

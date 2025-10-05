@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content">${msg.content}</span>`;
       } else if (msg.type === 'interrupted') {
         div.className = 'term-line term-interrupted';
-        div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content"><span class="interrupted-label">Interrupted</span> · What should Claude do instead?</span>`;
+        const name = msg.name || 'Claude';
+        div.innerHTML = `<span class="term-prefix">⎿</span><span class="term-content"><span class="interrupted-label">Interrupted</span> · What should ${name} do instead?</span>`;
       } else if (msg.type === 'processing') {
         div.className = 'term-line term-processing';
         div.innerHTML = `<span class="term-spinner">⠋</span><span class="term-content">${msg.content}</span><span class="term-esc">(esc to interrupt)</span>`;
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (message.type === 'error') {
           addErrorMessage(message.content);
         } else if (message.type === 'interrupted') {
-          addInterruptedMessage();
+          addInterruptedMessage(message.name);
         } else if (message.type === 'processing') {
           addProcessingMessage(message.content);
         }
@@ -225,8 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessage({ type: 'error', content }, 100);
       };
 
-      const addInterruptedMessage = () => {
-        addMessage({ type: 'interrupted' }, 400);
+      const addInterruptedMessage = (name) => {
+        addMessage({ type: 'interrupted', name }, 400);
       };
 
       const addProcessingMessage = (content) => {
