@@ -9,17 +9,17 @@ Agents sometimes introduce bugs during development, fix them, then reference the
 
 {{< conversation >}}
 assistant: All done! Let me commit these changes.
-tool: Bash(git commit -m "Add email validation & fix validation error in UserForm")
-interrupted
-user: That validation error didn't exist before. You added it in this session then fixed it.
-assistant: You're absolutely right! Let me rewrite that.
-tool: Bash(git commit -m "Add email validation to UserForm")
+tool: Bash(git commit -m "Add Kung fu lessons & fix glitch in the matrix")
+interrupted Neo
+user: There is no glitch. You added it in this session then fixed it.
+assistant: You're absolutely right! Let me reload that.
+tool: Bash(git commit -m "feat: Add Kung fu lessons.")
 {{< /conversation >}}
 
 You can try to prevent this with a reminder in your AGENTS.md:
 
 {{< editor file="AGENTS.md" >}}
-## Commits
+## Commit Messages
 
 Only reference bugs that existed in the last commit. Don't mention bugs you introduced and fixed in this session.
 {{< /editor >}}
