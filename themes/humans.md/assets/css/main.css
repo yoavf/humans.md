@@ -209,11 +209,31 @@ footer {
   display: block;
 }
 
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
 .post-date {
-  display: block;
   font-size: 0.75rem;
   color: #999;
-  margin-top: 0.25rem;
+}
+
+.post-badge {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  font-size: 0.6rem;
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.post-badge-new {
+  background: #fff7db;
+  color: #8a5300;
 }
 
 @media (max-width: 1024px) {
