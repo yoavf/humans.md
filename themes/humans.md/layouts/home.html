@@ -2,7 +2,7 @@
   {{ .Content }}
 
   {{- $categories := slice "Setup" "Building" "Debugging" "Refining" -}}
-  {{- $recentPosts := first 2 (site.RegularPages.ByDate.Reverse) -}}
+  {{- $sevenDaysAgo := now.AddDate 0 0 -7 -}}
 
   <div class="category-grid">
     {{- range $categories -}}
@@ -18,7 +18,7 @@
                   <span class="post-title">{{ .LinkTitle }}</span>
                   <div class="post-meta">
                     <time class="post-date">{{ .Date.Format "Jan 2, 2006" }}</time>
-                    {{- if in $recentPosts . -}}
+                    {{- if gt .Date $sevenDaysAgo -}}
                       <span class="post-badge post-badge-new">New</span>
                     {{- end -}}
                   </div>
