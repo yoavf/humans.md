@@ -1,8 +1,6 @@
-# HUMANS.md
+# pair.guide
 
-Notes on AI-assisted coding.
-
-Bite-sized, practical lessons from coding with AI agents like Claude Code, Codex, and others.
+Notes on pair-coding with AI
 
 ## Contributing
 

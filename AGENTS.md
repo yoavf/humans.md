@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Hugo static site for HUMANS.md - "lessons from coding with AI". The site uses a custom Hugo theme located in `themes/humans.md/`.
+This is a Hugo static site for pair.guide - "Notes on pair-coding with AI". The site uses a custom Hugo theme located in `themes/pair.guide/`.
 
 ## Commands
 
@@ -29,7 +29,7 @@ Creates a new post in the content/posts directory using the archetype template. 
 ## Architecture
 
 ### Hugo Theme Structure
-The custom theme `humans.md` is located in `themes/humans.md/` and follows Hugo's standard theme structure:
+The custom theme `pair.guide` is located in `themes/pair.guide/` and follows Hugo's standard theme structure:
 - **layouts/**: HTML templates using Hugo's template syntax
   - `baseof.html`: Base template with header/main/footer structure
   - `home.html`: Homepage template that lists all regular pages

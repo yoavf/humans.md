@@ -1,7 +1,7 @@
-baseURL = 'https://humans.md/'
+baseURL = 'https://pair.guide/'
 languageCode = 'en-us'
-title = 'HUMANS.md - notes on AI assisted coding'
-theme = 'humans.md'
+title = 'pair.guide - Notes on pair-coding with AI'
+theme = 'pair.guide'
 
 [permalinks]
 posts = "/posts/:slug/"
